@@ -18,21 +18,18 @@ const DepartmentList = () => {
           },
         });
 
-        if (response.data.success && Array.isArray(response.data.Departments)) {
-          let srno = 1;
-          
-          const data = response.data.Departments.map((dep,index) => ({
+        if (response.data.success && Array.isArray(response.data.data)) {
+          const data = response.data.data.map((dep, index) => ({
             _id: dep._id,
-            srno: index +1,
+            srno: index + 1,
             dep_name: dep.dep_name,
-           action: <DepartmentButtons _id={dep._id} />,
+            action: <DepartmentButtons _id={dep._id} />,
           }));
           setDepartments(data);
         } else {
           setDepartments([]);
         }
       } catch (error) {
-        
         if (error.response && !error.response.data.success) {
           alert(error.response.data.error);
         }

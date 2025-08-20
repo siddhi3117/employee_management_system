@@ -8,15 +8,18 @@ import AdminSummary from "./Components/dashboard/AdminSummary";
 import DepartmentList from "./Components/department/DepartmentList";
 import AddDepartment from "./Components/department/AddDepartment";
 import EditDepartment from "./Components/department/EditDepartment";
-
+import DeleteDepartment from "./Components/department/DeleteDepartment";
+import Register from "./Pages/Registration";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/admin-dashboard" />} />
+      {/* Default route → go to login */}
+      <Route path="/" element={<Navigate to="/login" />} />
+      {/* Public routes */}
       <Route path="/login" element={<Login />} />
-
-      {/* Admin dashboard with summary as default route */}
+      <Route path="/login/registration" element={<Register />} /> {/* ✅ Now outside */}
+      {/* Admin dashboard (protected) */}
       <Route
         path="/admin-dashboard"
         element={
@@ -27,16 +30,14 @@ function App() {
           </PrivateRoutes>
         }
       >
-        {/* Nested route - shows AdminSummary by default */}
         <Route index element={<AdminSummary />} />
-        <Route  path="/admin-dashboard/departments" element={<DepartmentList />} />
-        <Route  path="/admin-dashboard/add-department" element={<AddDepartment />} />
-        <Route  path="/admin-dashboard/department/:id" element={<EditDepartment />} />
+        <Route path="departments" element={<DepartmentList />} />
+        <Route path="add-department" element={<AddDepartment />} />
+        <Route path="department/:id" element={<EditDepartment />} />
+        <Route path="department/delete/:id" element={<DeleteDepartment />} />
       </Route>
-
-      {/* Employee dashboard route */}
+      {/* Employee dashboard (protected) */}
       <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
-    
     </Routes>
   );
 }
