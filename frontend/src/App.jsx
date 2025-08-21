@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Pages/Login";
 import AdminDashboard from "./Pages/AdminDashboard";
 import EmployeeDashboard from "./Pages/EmployeeDashboard";
+import EmployeeList from "./Components/department/EmployeeList";
+import AddEmployee from "./Components/department/AddEmployee";
 import PrivateRoutes from "./Utils/PrivateRoutes";
 import RoleBaseRoutes from "./Utils/RoleBaseRoutes";
 import AdminSummary from "./Components/dashboard/AdminSummary";
@@ -35,6 +37,8 @@ function App() {
         <Route path="add-department" element={<AddDepartment />} />
         <Route path="department/:id" element={<EditDepartment />} />
         <Route path="department/delete/:id" element={<DeleteDepartment />} />
+        <Route path="employees" element={<EmployeeList />} />
+        <Route path="add-employee" element={<AddEmployee />} />
       </Route>
       {/* Employee dashboard (protected) */}
       <Route path="/employee-dashboard" element={<EmployeeDashboard />} />

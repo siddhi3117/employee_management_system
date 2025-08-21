@@ -1,5 +1,4 @@
 import axios from "axios";
-import { set } from "mongoose";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { use } from "react";
 
@@ -48,6 +47,7 @@ const Authprovider = ({ children }) => {
 
   const login = (user) => {
     setUser(user);
+    localStorage.setItem("token", user.token);
   };
 
   const logout = () => {
