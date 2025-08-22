@@ -6,6 +6,7 @@ const AddEmployee = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [department, setDepartment] = useState("");
+  const [salary, setSalary] = useState(0);
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -44,6 +45,7 @@ const AddEmployee = () => {
           name,
           email,
           department,
+          salary,
         },
         {
           headers: {
@@ -54,7 +56,7 @@ const AddEmployee = () => {
 
       if (response.data.success) {
         alert("Employee added successfully!");
-        navigate("/admin-dashboard/employee-list"); // redirect to employee list
+        navigate("/admin-dashboard/employees"); // redirect to employee list
       } else {
         alert("Failed to add employee");
       }
@@ -92,6 +94,18 @@ const AddEmployee = () => {
               required
               className="w-full border px-3 py-2 rounded"
               placeholder="Enter employee email"
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium">Salary</label>
+            <input
+              type="number"
+              value={salary}
+              onChange={(e) => setSalary(e.target.value)}
+              required
+              className="w-full border px-3 py-2 rounded"
+              placeholder="Enter employee salary"
             />
           </div>
 

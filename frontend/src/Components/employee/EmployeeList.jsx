@@ -66,7 +66,7 @@ const EmployeeList = () => {
             </Link>
           </div>
           <div className="mt-5">
-            <DataTable columns={employeeColumns} data={employees} />
+            <DataTable columns={employeeColumns} data={employees}  />
           </div>
         </div>
       )}

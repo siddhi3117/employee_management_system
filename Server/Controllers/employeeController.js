@@ -55,3 +55,35 @@ export const deleteEmployee = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+export const getEmployeeLeaves = async (req, res) => {
+    try {
+        const leaves = await Leave.find().populate('employee', 'name email department');
+        res.status(200).json({ success: true, data: leaves });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+export const approveLeave = async (req, res) => {
+    try {
+        const leave = await Leave.findByIdAndUpdate(req.params.id, { status: "approved" }, { new: true });
+        if (!leave) {
+            return res.status(404).json({ success: false, error: "Leave not found" });
+        }
+        res.status(200).json({ success: true, data: leave });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+export const rejectLeave = async (req, res) => {
+    try {
+        const leave = await Leave.findByIdAndUpdate(req.params.id, { status: "rejected" }, { new: true });
+        if (!leave) {
+            return res.status(404).json({ success: false, error: "Leave not found" });
+        }
+        res.status(200).json({ success: true, data: leave });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};

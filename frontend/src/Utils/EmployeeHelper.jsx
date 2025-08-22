@@ -1,6 +1,7 @@
 // Utils/EmployeeHelper.js
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 export const employeeColumns = [
@@ -28,7 +29,7 @@ export const employeeColumns = [
   {
     name: "Action",
     selector: (row) => row.action,
-    width: "150px",
+    width: "200px",
   },
 ];
 
@@ -36,17 +37,32 @@ export const EmployeeButtons = ({ _id }) => {
   return (
     <div className="flex gap-2">
       <Link
+        to={`/admin-dashboard/employee/${_id}`}
+        className="px-2 py-0.5 bg-gray-600 text-white rounded hover:bg-blue-800"
+      >
+        Details
+      </Link>
+      <Link
         to={`/admin-dashboard/edit-employee/${_id}`}
         className="px-2 py-0.5 bg-blue-600 text-white rounded hover:bg-blue-800"
       >
         Edit
       </Link>
-      <Link
-        to={`/admin-dashboard/delete-employee/${_id}`}
+      <button
         className="px-2 py-0.5 bg-red-600 text-white rounded hover:bg-red-800"
+        onClick={() =>{
+          (async () => {
+            await axios.delete(`http://localhost:5000/api/employee/delete/${_id}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            });
+            window.location.reload();
+          })();
+        }}
       >
         Delete
-      </Link>
+      </button>
     </div>
   );
 };

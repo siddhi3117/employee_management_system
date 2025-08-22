@@ -2,8 +2,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Pages/Login";
 import AdminDashboard from "./Pages/AdminDashboard";
 import EmployeeDashboard from "./Pages/EmployeeDashboard";
-import EmployeeList from "./Components/department/EmployeeList";
-import AddEmployee from "./Components/department/AddEmployee";
+import EmployeeList from "./Components/employee/EmployeeList";
+import EmployeeDetails from "./Components/employee/EmployeeDetails";
+import AddEmployee from "./Components/employee/AddEmployee";
+import LeavesPage from "./Components/leaves/LeavesPage";
+import LeaveDetails from "./Components/leaves/LeaveDeatils";
 import PrivateRoutes from "./Utils/PrivateRoutes";
 import RoleBaseRoutes from "./Utils/RoleBaseRoutes";
 import AdminSummary from "./Components/dashboard/AdminSummary";
@@ -38,7 +41,10 @@ function App() {
         <Route path="department/:id" element={<EditDepartment />} />
         <Route path="department/delete/:id" element={<DeleteDepartment />} />
         <Route path="employees" element={<EmployeeList />} />
+        <Route path="employee/:id" element={<EmployeeDetails />} />
         <Route path="add-employee" element={<AddEmployee />} />
+        <Route path="leaves" element={<LeavesPage />} />
+        <Route path="leave/:id" element={<LeaveDetails />} />
       </Route>
       {/* Employee dashboard (protected) */}
       <Route path="/employee-dashboard" element={<EmployeeDashboard />} />

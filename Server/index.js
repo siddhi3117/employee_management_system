@@ -7,11 +7,13 @@ import authRouter from "./routes/auth.js";
 import departmentRouter from "./routes/department.js";
 import connectToDatabase from "./db/db.js";
 import employeeRouter from "./routes/employee.js";
+import adminRouter from "./routes/admin.js";
 
 console.log("Loading routes...");
 console.log("Auth router loaded:", !!authRouter);
 console.log("Department router loaded:", !!departmentRouter);
 console.log("Employee router loaded:", !!employeeRouter);
+console.log("Admin router loaded:", !!adminRouter);
 
 connectToDatabase();
 const app = express();
@@ -27,6 +29,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/department", departmentRouter);
 app.use("/api/employee", employeeRouter);
 
