@@ -44,14 +44,7 @@ const AdminSidebar = () => {
           <span>Leave</span>
         </NavLink>
         <NavLink
-          to="/admin-dashboard"
-          className="flex.items-center space-x-4 block py-2.5 px-4 rounded"
-        >
-          <FaMoneyBillWave />
-          <span>Salary</span>
-        </NavLink>
-        <NavLink
-          to="/admin-dashboard"
+          to="/admin-dashboard/settings"
           className="flex.items-center space-x-4 block py-2.5 px-4 rounded"
         >
           <FaCogs />

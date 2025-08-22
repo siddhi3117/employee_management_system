@@ -8,17 +8,19 @@ import {
     deleteEmployee,
     getEmployeeLeaves,
     approveLeave,
-    rejectLeave
+    rejectLeave,
+    employeeSummary
 } from "../Controllers/employeeController.js";
 
 const router = express.Router();
 
 router.get("/", getAllEmployees);
+router.get("/leaves", authMiddleware, getEmployeeLeaves);
+router.post("/summary", authMiddleware, employeeSummary);
 router.get("/:id", authMiddleware, getEmployeeById);
 router.post("/create", createEmployee);
 router.put("/update/:id", authMiddleware, updateEmployee);
 router.delete("/delete/:id", authMiddleware, deleteEmployee);
-router.get("/leaves", authMiddleware, getEmployeeLeaves);
 router.post("/leave/:id/reject", authMiddleware, rejectLeave);
 router.post("/leave/:id/approve", authMiddleware, approveLeave);
 

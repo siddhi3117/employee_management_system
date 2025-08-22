@@ -1,72 +1,70 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DataTable from "react-data-table-component";
+import { columns, DepartmentButtons } from "../../../Utils/DepartmentHelper";
 import axios from "axios";
-import { employeeColumns, EmployeeButtons } from "../../Utils/EmployeeHelper";
 
-const EmployeeList = () => {
-  const [employees, setEmployees] = useState([]);
-  const [empLoading, setEmpLoading] = useState(false);
+const DepartmentList = () => {
+  const [departments, setDepartments] = useState([]);
+  const [depLoading, setDepLoading] = useState(false);
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      setEmpLoading(true);
+    const fetchDepartments = async () => {
+      setDepLoading(true);
       try {
-        const response = await axios.get("http://localhost:5000/api/employee", {
+        const response = await axios.get("http://localhost:5000/api/department", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 
         if (response.data.success && Array.isArray(response.data.data)) {
-          const data = response.data.data.map((emp, index) => ({
-            _id: emp._id,
+          const data = response.data.data.map((dep, index) => ({
+            _id: dep._id,
             srno: index + 1,
-            name: emp.name,
-            email: emp.email,
-            department: emp.department?.dep_name || "N/A",
-            action: <EmployeeButtons _id={emp._id} />,
+            dep_name: dep.dep_name,
+            action: <DepartmentButtons _id={dep._id} />,
           }));
-          setEmployees(data);
+          setDepartments(data);
         } else {
-          setEmployees([]);
+          setDepartments([]);
         }
       } catch (error) {
         if (error.response && !error.response.data.success) {
-          console.log(error.response.data.error);
+          alert(error.response.data.error);
         }
       } finally {
-        setEmpLoading(false);
+        setDepLoading(false);
       }
     };
 
-    fetchEmployees();
+    fetchDepartments();
   }, []);
 
   return (
     <>
-      {empLoading ? (
+      {depLoading ? (
         <div>Loading...</div>
       ) : (
         <div className="p-5">
           <div className="text-center">
-            <h3 className="text-2xl font-bold">Manage Employees</h3>
+            <h3 className="text-2xl font-bold">Manage Departments</h3>
           </div>
           <div className="flex justify-between items-center">
             <input
               type="text"
-              placeholder="search by Employee Name"
+              placeholder="search by Dep Name"
               className="px-4 py-0.5 border"
             />
             <Link
-              to="/admin-dashboard/add-employee"
+              to="/admin-dashboard/add-department"
               className="px-4 py-1 bg-teal-600 rounded text-white hover:bg-teal-800"
             >
-              Add New Employee
+              Add New Department
             </Link>
           </div>
           <div className="mt-5">
-            <DataTable columns={employeeColumns} data={employees}  />
+            <DataTable columns={columns} data={departments} />
           </div>
         </div>
       )}
@@ -74,4 +72,4 @@ const EmployeeList = () => {
   );
 };
 
-export default EmployeeList;
+export default DepartmentList;

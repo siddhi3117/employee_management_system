@@ -33,7 +33,8 @@ export const getAdminSummary = async (req, res) => {
 
         res.json(summaryData);
     } catch (error) {
-        
+        console.error("Admin summary error:", error);
+        res.status(500).json({ success: false, error: error.message });
     }
 }
     
