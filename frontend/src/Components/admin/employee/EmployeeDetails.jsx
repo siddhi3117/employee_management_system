@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 
 const EmployeeDetails = () => {
   const { id } = useParams();
@@ -13,14 +13,7 @@ const EmployeeDetails = () => {
     const fetchEmployee = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/employee/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await api.get(`/employee/${id}`);
 
         if (response.data.success) {
           setEmployee(response.data.data);
@@ -55,7 +48,9 @@ const EmployeeDetails = () => {
   return (
     <div className="p-5 flex justify-center">
       <div className="w-full max-w-3xl bg-white shadow rounded p-6">
-        <h3 className="text-2xl font-bold text-center mb-5">Employee Details</h3>
+        <h3 className="text-2xl font-bold text-center mb-5">
+          Employee Details
+        </h3>
 
         {/* Profile Image */}
         {employee.profileImage && (
@@ -78,25 +73,27 @@ const EmployeeDetails = () => {
             <span className="block text-gray-600 font-medium">Email:</span>
             <p className="text-lg">{employee.email}</p>
           </div>
-            <div>
-                <span className="block text-gray-600 font-medium">Salary:</span>
-                <p className="text-lg">${employee.salary}</p>
-            </div>
-
           <div>
-            <span className="block text-gray-600 font-medium">Department:</span>
-            <p className="text-lg">
-              {employee.department?.dep_name || "N/A"}
-            </p>
+            <span className="block text-gray-600 font-medium">Salary:</span>
+            <p className="text-lg">${employee.salary}</p>
           </div>
 
           <div>
-            <span className="block text-gray-600 font-medium">Total Leaves:</span>
+            <span className="block text-gray-600 font-medium">Department:</span>
+            <p className="text-lg">{employee.department?.dep_name || "N/A"}</p>
+          </div>
+
+          <div>
+            <span className="block text-gray-600 font-medium">
+              Total Leaves:
+            </span>
             <p className="text-lg">{employee.total_leaves}</p>
           </div>
 
           <div>
-            <span className="block text-gray-600 font-medium">Currently On Leave:</span>
+            <span className="block text-gray-600 font-medium">
+              Currently On Leave:
+            </span>
             <p
               className={`text-lg font-semibold ${
                 employee.onleave ? "text-red-600" : "text-green-600"
@@ -124,7 +121,9 @@ const EmployeeDetails = () => {
                 <tbody>
                   {employee.leaveHistory.map((leave, idx) => (
                     <tr key={idx}>
-                      <td className="border p-2 capitalize">{leave.leaveType}</td>
+                      <td className="border p-2 capitalize">
+                        {leave.leaveType}
+                      </td>
                       <td className="border p-2">
                         {new Date(leave.fromDate).toLocaleDateString()}
                       </td>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DataTable from "react-data-table-component";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 import { employeeColumns, EmployeeButtons } from "../../../Utils/EmployeeHelper";
 
 const EmployeeList = () => {
@@ -12,12 +12,7 @@ const EmployeeList = () => {
     const fetchEmployees = async () => {
       setEmpLoading(true);
       try {
-        const response = await axios.get("http://localhost:5000/api/employee", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
+        const response = await api.get("/employee");
         if (response.data.success && Array.isArray(response.data.data)) {
           const data = response.data.data.map((emp, index) => ({
             _id: emp._id,
