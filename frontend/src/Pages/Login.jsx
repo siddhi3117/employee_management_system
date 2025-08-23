@@ -1,12 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/authContext";
-import { useNavigate, Link } from "react-router-dom";  // ✅ added Link
+import { useNavigate, Link, Navigate } from "react-router-dom";  // ✅ added Link
+import { useEffect } from "react";
+  
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -41,8 +44,16 @@ const Login = () => {
       }
     }
   };
+  useEffect(()=>{
+    if(user){
+      navigate(user.role === "admin" ? "/admin-dashboard" : "/employee-dashboard");
+    }
+  },[user])
 
   return (
+    <div>
+      {user && <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/employee-dashboard"} replace={true}/>}
+   
     <div className="flex flex-col items-center h-screen justify-center bg-gradient-to-b from-teal-600 from-50% to-gray-100 to-50% space-y-6">
       <h2 className="font-serif py-1 text-3xl text-white">
         Employee Management System
@@ -110,6 +121,7 @@ const Login = () => {
         </p>
       </div>
     </div>
+     </div>
   );
 };
 

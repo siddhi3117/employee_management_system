@@ -1,8 +1,8 @@
 import React from 'react'
 import { useAuth } from '../context/authContext'
-import AdminSidebar from '../Components/dashboard/AdminSidebar'
-import Navbar from '../Components/dashboard/Navbar'
-import AdminSummary from '../Components/dashboard/AdminSummary'
+import AdminSidebar from '../Components/admin/dashboard/AdminSidebar'
+import Navbar from '../Components/admin/dashboard/Navbar'
+import AdminSummary from '../Components/admin/dashboard/AdminSummary'
 import { Outlet } from 'react-router-dom'
 
 

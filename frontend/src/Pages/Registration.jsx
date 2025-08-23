@@ -1,13 +1,16 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 const Registration = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("employee"); // Default role for registration
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -24,6 +27,7 @@ const Registration = () => {
         name,
         email,
         password,
+        role,
       });
 
       if (response.data.success) {
@@ -39,6 +43,7 @@ const Registration = () => {
   };
 
   return (
+    <div>{user && <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/employee-dashboard"} replace={true}/>}
     <div className="flex flex-col items-center h-screen justify-center bg-gradient-to-b from-teal-600 from-50% to-gray-100 to-50% space-y-6">
       <h2 className="font-serif py-1 text-3xl text-white">
         Employee Management System
@@ -92,6 +97,18 @@ const Registration = () => {
               required
             />
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Role</label>
+            <select
+              className="w-full px-3 py-2 border rounded"
+              onChange={(e) => setRole(e.target.value)}
+              required
+            >
+              <option value="">Select role</option>
+              <option value="admin">Admin</option>
+              <option value="employee" selected>Employee</option>
+            </select>
+          </div>
 
           <div className="mb-4">
             <button
@@ -111,6 +128,7 @@ const Registration = () => {
           </Link>
         </p>
       </div>
+    </div>
     </div>
   );
 };
