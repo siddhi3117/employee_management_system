@@ -9,7 +9,12 @@ import {
     getEmployeeLeaves,
     approveLeave,
     rejectLeave,
-    employeeSummary
+    employeeSummary,
+    getLeavesOfEmployee,
+    addLeave,
+    getEmployeeProfile,
+    changePassword,
+    updateProfile
 } from "../Controllers/employeeController.js";
 
 const router = express.Router();
@@ -23,5 +28,10 @@ router.put("/update/:id", authMiddleware, updateEmployee);
 router.delete("/delete/:id", authMiddleware, deleteEmployee);
 router.post("/leave/:id/reject", authMiddleware, rejectLeave);
 router.post("/leave/:id/approve", authMiddleware, approveLeave);
+router.post("/getleaves", authMiddleware, getLeavesOfEmployee);
+router.post("/addleave", authMiddleware, addLeave);
+router.get("/profile", authMiddleware, getEmployeeProfile);
+router.post("/change-password", authMiddleware, changePassword);
+router.put("/update-profile", authMiddleware, updateProfile);
 
 export default router;

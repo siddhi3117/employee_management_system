@@ -7,10 +7,13 @@ import EmployeeDetails from "./Components/admin/employee/EmployeeDetails";
 import EmployeeSummary from "./Components/employee/EmployeeSummary";
 import AddEmployee from "./Components/admin/employee/AddEmployee";
 import LeavesPage from "./Components/admin/leaves/LeavesPage";
+import ELeavesPage from "./Components/employee/ELeavesPage";
 import LeaveDetails from "./Components/admin/leaves/LeaveDeatils";
 import PrivateRoutes from "./Utils/PrivateRoutes";
 import RoleBaseRoutes from "./Utils/RoleBaseRoutes";
 import SettingsPage from "./Components/admin/dashboard/SettingsPage";
+import EmployeeSettingsPage from "./Components/employee/SettingsPage";
+import PaymentsPage from "./Components/employee/PaymentsPage";
 import AdminSummary from "./Components/admin/dashboard/AdminSummary";
 import DepartmentList from "./Components/admin/department/DepartmentList";
 import AddDepartment from "./Components/admin/department/AddDepartment";
@@ -36,6 +39,9 @@ function App() {
 
   const employeeRoutes = [
     { path: "", element: <EmployeeSummary /> }, // index route
+    { path: "leaves", element: <ELeavesPage /> },
+    { path: "payments", element: <PaymentsPage /> },
+    { path: "settings", element: <EmployeeSettingsPage /> },
   ];
 
   return (
