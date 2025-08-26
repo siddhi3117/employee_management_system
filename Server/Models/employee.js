@@ -13,10 +13,8 @@ const employeeSchema = new mongoose.Schema({
         toDate:{type: Date, required: true},
         status:{type: String, enum:["approved","pending","rejected"], default: "pending"}
     }],
-    onleave:{type: Boolean, default: false}
-})
- // ✅ Attendance properly inside schema
-  attendance: [
+    onleave:{type: Boolean, default: false},
+    attendance: [
     {
       date: { type: Date, required: true },
       status: {
@@ -26,7 +24,7 @@ const employeeSchema = new mongoose.Schema({
       },
     },
   ],
-});
+})
 
 
 

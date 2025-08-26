@@ -239,6 +239,65 @@ export const rejectLeave = async (req, res) => {
     }
 };
 
+// Get approved leaves for a specific employee and month/year
+export const getApprovedLeavesByEmployeeAndMonth = async (req, res) => {
+    try {
+        const { id } = req.params; // employee id
+        const month = parseInt(req.query.month, 10); // 0-based month
+        const year = parseInt(req.query.year, 10);
+
+        if (Number.isNaN(month) || Number.isNaN(year)) {
+            return res.status(400).json({ success: false, error: "Invalid month/year" });
+        }
+
+        // Validate employee exists
+        const employee = await Employee.findById(id);
+        if (!employee) {
+            return res.status(404).json({ success: false, error: "Employee not found" });
+        }
+
+        const rangeStart = new Date(year, month, 1, 0, 0, 0, 0);
+        const rangeEnd = new Date(year, month + 1, 0, 23, 59, 59, 999);
+
+        // Fetch approved leaves that overlap the month
+        const leaves = await Leave.find({
+            employee: id,
+            status: "approved",
+            $or: [
+                { fromDate: { $lte: rangeEnd }, toDate: { $gte: rangeStart } },
+            ]
+        }).select("leaveType fromDate toDate status");
+
+        // Count working days within the month covered by approved leaves (exclude Sat/Sun)
+        let totalLeaveDays = 0;
+        const detailed = [];
+        leaves.forEach(leave => {
+            const leaveStart = new Date(Math.max(leave.fromDate.getTime(), rangeStart.getTime()));
+            const leaveEnd = new Date(Math.min(leave.toDate.getTime(), rangeEnd.getTime()));
+            let days = 0;
+            for (let d = new Date(leaveStart); d <= leaveEnd; d.setDate(d.getDate() + 1)) {
+                const dayOfWeek = d.getDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    days++;
+                }
+            }
+            totalLeaveDays += days;
+            detailed.push({
+                leaveType: leave.leaveType,
+                fromDate: leave.fromDate,
+                toDate: leave.toDate,
+                status: leave.status,
+                workingDaysCounted: days
+            });
+        });
+
+        return res.status(200).json({ success: true, data: { totalLeaveDays, leaves: detailed } });
+    } catch (error) {
+        console.error("Get approved leaves by employee and month error:", error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
 export const employeeSummary = async (req, res) => {
     try{
         const userId = req.user._id; // Get user ID from auth middleware
