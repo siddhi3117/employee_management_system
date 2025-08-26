@@ -167,6 +167,37 @@ const EmployeeDetails = () => {
           >
             Edit
           </button>
+          {/* Attendance Calendar */}
+<div className="mt-6">
+  <h4 className="text-xl font-semibold mb-3">Attendance</h4>
+  
+  {employee.attendance && employee.attendance.length > 0 ? (
+    <div className="grid grid-cols-7 gap-2 border p-3 rounded">
+      {Array.from({ length: 30 }, (_, i) => {
+        const day = i + 1;
+        const record = employee.attendance.find(
+          (a) => new Date(a.date).getDate() === day
+        );
+        let color = "bg-gray-200";
+        if (record?.status === "Present") color = "bg-green-400";
+        if (record?.status === "Absent") color = "bg-red-400";
+        if (record?.status === "Leave") color = "bg-yellow-400";
+
+        return (
+          <div
+            key={day}
+            className={`flex items-center justify-center h-12 w-12 rounded ${color}`}
+          >
+            {day}
+          </div>
+        );
+      })}
+    </div>
+  ) : (
+    <p>No attendance records found.</p>
+  )}
+</div>
+
         </div>
       </div>
     </div>

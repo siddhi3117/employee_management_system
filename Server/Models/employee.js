@@ -15,6 +15,19 @@ const employeeSchema = new mongoose.Schema({
     }],
     onleave:{type: Boolean, default: false}
 })
+ // ✅ Attendance properly inside schema
+  attendance: [
+    {
+      date: { type: Date, required: true },
+      status: {
+        type: String,
+        enum: ["Present", "Absent", "Leave"],
+        default: "Present",
+      },
+    },
+  ],
+});
+
 
 
 const Employee = mongoose.model("Employee", employeeSchema)
