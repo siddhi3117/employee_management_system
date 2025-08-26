@@ -14,7 +14,8 @@ import {
     addLeave,
     getEmployeeProfile,
     changePassword,
-    updateProfile
+    updateProfile,
+    getApprovedLeavesByEmployeeAndMonth
 } from "../Controllers/employeeController.js";
 
 const router = express.Router();
@@ -22,6 +23,7 @@ const router = express.Router();
 router.get("/", getAllEmployees);
 router.get("/leaves", authMiddleware, getEmployeeLeaves);
 router.post("/summary", authMiddleware, employeeSummary);
+router.get("/:id/approved-leaves", authMiddleware, getApprovedLeavesByEmployeeAndMonth);
 router.get("/:id", authMiddleware, getEmployeeById);
 router.post("/create", createEmployee);
 router.put("/update/:id", authMiddleware, updateEmployee);

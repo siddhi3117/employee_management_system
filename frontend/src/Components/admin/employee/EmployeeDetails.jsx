@@ -6,7 +6,33 @@ const EmployeeDetails = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [approvedLeaveDays, setApprovedLeaveDays] = useState(0);
   const navigate = useNavigate();
+
+  // Calculate attendance statistics for selected month
+  const calculateAttendanceStats = (month, year) => {
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month + 1, 0);
+    
+    // Calculate total working days (excluding weekends)
+    let totalWorkingDays = 0;
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+      if (d.getDay() !== 0 && d.getDay() !== 6) { // Exclude Sunday (0) and Saturday (6)
+        totalWorkingDays++;
+      }
+    }
+
+    // Calculate present days using backend-approved leave days
+    const totalPresentDays = Math.max(totalWorkingDays - approvedLeaveDays, 0);
+
+    return {
+      totalWorkingDays,
+      totalLeaveDays: approvedLeaveDays,
+      totalPresentDays,
+    };
+  };
 
   // Fetch employee details
   useEffect(() => {
@@ -33,6 +59,27 @@ const EmployeeDetails = () => {
     fetchEmployee();
   }, [id, navigate]);
 
+  // Fetch approved leave days for selected month/year from backend
+  useEffect(() => {
+    const fetchApprovedLeaves = async () => {
+      if (!id) return;
+      try {
+        const res = await api.get(`/employee/${id}/approved-leaves`, {
+          params: { month: selectedMonth, year: selectedYear }
+        });
+        if (res.data?.success) {
+          setApprovedLeaveDays(res.data.data?.totalLeaveDays || 0);
+        } else {
+          setApprovedLeaveDays(0);
+        }
+      } catch (err) {
+        console.error("Error fetching approved leaves:", err);
+        setApprovedLeaveDays(0);
+      }
+    };
+    fetchApprovedLeaves();
+  }, [id, selectedMonth, selectedYear]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -45,9 +92,15 @@ const EmployeeDetails = () => {
     return null;
   }
 
+  const attendanceStats = calculateAttendanceStats(selectedMonth, selectedYear);
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
   return (
     <div className="p-5 flex justify-center">
-      <div className="w-full max-w-3xl bg-white shadow rounded p-6">
+      <div className="w-full max-w-4xl bg-white shadow rounded p-6">
         <h3 className="text-2xl font-bold text-center mb-5">
           Employee Details
         </h3>
@@ -101,6 +154,78 @@ const EmployeeDetails = () => {
             >
               {employee.onleave ? "Yes" : "No"}
             </p>
+          </div>
+
+          {/* Attendance Statistics */}
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <h4 className="text-xl font-semibold mb-4">Attendance Statistics</h4>
+            
+            {/* Month/Year Selector */}
+            <div className="flex gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Month:</label>
+                <select 
+                  value={selectedMonth} 
+                  onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                  className="border border-gray-300 rounded px-3 py-2"
+                >
+                  {monthNames.map((month, index) => (
+                    <option key={index} value={index}>{month}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Year:</label>
+                <select 
+                  value={selectedYear} 
+                  onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                  className="border border-gray-300 rounded px-3 py-2"
+                >
+                  {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Statistics Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="bg-white p-4 rounded-lg border shadow-sm">
+                <h5 className="text-sm font-medium text-gray-500 mb-1">Total Working Days</h5>
+                <p className="text-2xl font-bold text-blue-600">{attendanceStats.totalWorkingDays}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg border shadow-sm">
+                <h5 className="text-sm font-medium text-gray-500 mb-1">Approved Leaves</h5>
+                <p className="text-2xl font-bold text-yellow-600">{attendanceStats.totalLeaveDays}</p>
+              </div>
+              <div className="bg-white p-4 rounded-lg border shadow-sm">
+                <h5 className="text-sm font-medium text-gray-500 mb-1">Present Days</h5>
+                <p className="text-2xl font-bold text-green-600">{attendanceStats.totalPresentDays}</p>
+                <p className="text-xs text-gray-500">
+                  (Working Days - Approved Leaves)
+                </p>
+              </div>
+            </div>
+
+            {/* Attendance Percentage */}
+            <div className="bg-white p-4 rounded-lg border shadow-sm">
+              <h5 className="text-sm font-medium text-gray-500 mb-1">Attendance Rate</h5>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-green-500 h-2 rounded-full" 
+                    style={{ 
+                      width: `${attendanceStats.totalWorkingDays > 0 ? (attendanceStats.totalPresentDays / attendanceStats.totalWorkingDays) * 100 : 0}%` 
+                    }}
+                  ></div>
+                </div>
+                <span className="text-sm font-medium text-gray-700">
+                  {attendanceStats.totalWorkingDays > 0 
+                    ? Math.round((attendanceStats.totalPresentDays / attendanceStats.totalWorkingDays) * 100) 
+                    : 0}%
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Leave History */}
@@ -167,37 +292,37 @@ const EmployeeDetails = () => {
           >
             Edit
           </button>
-          {/* Attendance Calendar */}
-<div className="mt-6">
-  <h4 className="text-xl font-semibold mb-3">Attendance</h4>
-  
-  {employee.attendance && employee.attendance.length > 0 ? (
-    <div className="grid grid-cols-7 gap-2 border p-3 rounded">
-      {Array.from({ length: 30 }, (_, i) => {
-        const day = i + 1;
-        const record = employee.attendance.find(
-          (a) => new Date(a.date).getDate() === day
-        );
-        let color = "bg-gray-200";
-        if (record?.status === "Present") color = "bg-green-400";
-        if (record?.status === "Absent") color = "bg-red-400";
-        if (record?.status === "Leave") color = "bg-yellow-400";
+        </div>
 
-        return (
-          <div
-            key={day}
-            className={`flex items-center justify-center h-12 w-12 rounded ${color}`}
-          >
-            {day}
-          </div>
-        );
-      })}
-    </div>
-  ) : (
-    <p>No attendance records found.</p>
-  )}
-</div>
+        {/* Attendance Calendar */}
+        <div className="mt-6">
+          <h4 className="text-xl font-semibold mb-3">Monthly Attendance Calendar</h4>
+          
+          {employee.attendance && employee.attendance.length > 0 ? (
+            <div className="grid grid-cols-7 gap-2 border p-3 rounded">
+              {Array.from({ length: 30 }, (_, i) => {
+                const day = i + 1;
+                const record = employee.attendance.find(
+                  (a) => new Date(a.date).getDate() === day
+                );
+                let color = "bg-gray-200";
+                if (record?.status === "Present") color = "bg-green-400";
+                if (record?.status === "Absent") color = "bg-red-400";
+                if (record?.status === "Leave") color = "bg-yellow-400";
 
+                return (
+                  <div
+                    key={day}
+                    className={`flex items-center justify-center h-12 w-12 rounded ${color}`}
+                  >
+                    {day}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p>No attendance records found.</p>
+          )}
         </div>
       </div>
     </div>
