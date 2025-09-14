@@ -8,6 +8,7 @@ import departmentRouter from "./routes/department.js";
 import connectToDatabase from "./db/db.js";
 import employeeRouter from "./routes/employee.js";
 import adminRouter from "./routes/admin.js";
+import taskRouter from "./routes/task.js";
 
 console.log("Loading routes...");
 console.log("Auth router loaded:", !!authRouter);
@@ -32,6 +33,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/department", departmentRouter);
 app.use("/api/employee", employeeRouter);
+app.use("/api/task", taskRouter);
 
 console.log("Routes registered successfully");
 
