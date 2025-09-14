@@ -6,6 +6,7 @@ import EmployeeList from "./Components/admin/employee/EmployeeList";
 import EmployeeDetails from "./Components/admin/employee/EmployeeDetails";
 import EmployeeSummary from "./Components/employee/EmployeeSummary";
 import AddEmployee from "./Components/admin/employee/AddEmployee";
+import EditEmployee from "./Components/admin/employee/EditEmployee";
 import LeavesPage from "./Components/admin/leaves/LeavesPage";
 import ELeavesPage from "./Components/employee/ELeavesPage";
 import LeaveDetails from "./Components/admin/leaves/LeaveDeatils";
@@ -13,13 +14,19 @@ import PrivateRoutes from "./Utils/PrivateRoutes";
 import RoleBaseRoutes from "./Utils/RoleBaseRoutes";
 import SettingsPage from "./Components/admin/dashboard/SettingsPage";
 import EmployeeSettingsPage from "./Components/employee/SettingsPage";
-import PaymentsPage from "./Components/employee/PaymentsPage";
 import AdminSummary from "./Components/admin/dashboard/AdminSummary";
 import DepartmentList from "./Components/admin/department/DepartmentList";
 import AddDepartment from "./Components/admin/department/AddDepartment";
 import EditDepartment from "./Components/admin/department/EditDepartment";
 import DeleteDepartment from "./Components/admin/department/DeleteDepartment";
 import Register from "./Pages/Registration";
+// Task components
+import TaskList from "./Components/admin/tasks/TaskList";
+import CreateTask from "./Components/admin/tasks/CreateTask";
+import EditTask from "./Components/admin/tasks/EditTask";
+import TaskDetails from "./Components/admin/tasks/TaskDetails";
+import EmployeeTasksPage from "./Components/employee/EmployeeTasksPage";
+import EmployeeTaskDetails from "./Components/employee/EmployeeTaskDetails";
 
 function App() {
   // ✅ Object list for admin child routes
@@ -32,15 +39,21 @@ function App() {
     { path: "employees", element: <EmployeeList /> },
     { path: "employee/:id", element: <EmployeeDetails /> },
     { path: "add-employee", element: <AddEmployee /> },
+    { path: "edit-employee/:id", element: <EditEmployee /> },
     { path: "leaves", element: <LeavesPage /> },
     { path: "leave/:id", element: <LeaveDetails /> },
+    { path: "tasks", element: <TaskList /> },
+    { path: "tasks/create", element: <CreateTask /> },
+    { path: "tasks/edit/:id", element: <EditTask /> },
+    { path: "tasks/:id", element: <TaskDetails /> },
     { path: "settings", element: <SettingsPage /> },
   ];
 
   const employeeRoutes = [
     { path: "", element: <EmployeeSummary /> }, // index route
     { path: "leaves", element: <ELeavesPage /> },
-    { path: "payments", element: <PaymentsPage /> },
+    { path: "tasks", element: <EmployeeTasksPage /> },
+    { path: "tasks/:id", element: <EmployeeTaskDetails /> },
     { path: "settings", element: <EmployeeSettingsPage /> },
   ];
 
