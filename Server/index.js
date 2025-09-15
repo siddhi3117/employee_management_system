@@ -21,9 +21,10 @@ const app = express();
 
 // Set default values for environment variables
 const PORT = process.env.PORT || 5000;
+const FRONTEND_SERVER_URL=process.env.FRONTEND_SERVER_URL;
 
 app.use(cors({
-  origin: ["http://localhost:5173","http://localhost:5174"],
+  origin: ["http://localhost:5173","http://localhost:5174",FRONTEND_SERVER_URL],
   credentials: true,
 }));
 
