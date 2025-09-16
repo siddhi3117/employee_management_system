@@ -1,0 +1,769 @@
+openapi: 3.0.0
+info:
+  title: Employee Management System API
+  description: API documentation for the Employee Management System
+  version: 1.0.0
+  contact:
+    name: Employee Management System
+servers:
+  - url: http://localhost:5000/api
+    description: Development server
+
+paths:
+  # Authentication Routes
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user with credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid credentials
+
+  /auth/verify:
+    get:
+      tags:
+        - Authentication
+      summary: Verify authentication token
+      description: Verify if the current token is valid
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token is valid
+        '401':
+          description: Invalid or expired token
+
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user
+      description: Create a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum: [admin, employee]
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Invalid input data
+
+  # Admin Routes
+  /admin/adminsummary:
+    get:
+      tags:
+        - Admin
+      summary: Get admin dashboard summary
+      description: Retrieve summary statistics for admin dashboard
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Admin summary data retrieved successfully
+        '401':
+          description: Unauthorized access
+
+  # Department Routes
+  /department:
+    get:
+      tags:
+        - Department
+      summary: Get all departments
+      description: Retrieve list of all departments
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of departments retrieved successfully
+        '401':
+          description: Unauthorized access
+
+    post:
+      tags:
+        - Department
+      summary: Add new department
+      description: Create a new department
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Department created successfully
+        '400':
+          description: Invalid input data
+
+  /department/add:
+    post:
+      tags:
+        - Department
+      summary: Add department (alternative endpoint)
+      description: Alternative endpoint to create a new department
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Department created successfully
+        '400':
+          description: Invalid input data
+
+  /department/{id}:
+    get:
+      tags:
+        - Department
+      summary: Get department by ID
+      description: Retrieve a specific department by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Department retrieved successfully
+        '404':
+          description: Department not found
+
+    put:
+      tags:
+        - Department
+      summary: Update department
+      description: Update an existing department
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Department updated successfully
+        '404':
+          description: Department not found
+
+    delete:
+      tags:
+        - Department
+      summary: Delete department
+      description: Delete an existing department
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Department deleted successfully
+        '404':
+          description: Department not found
+
+  # Employee Routes
+  /employee:
+    get:
+      tags:
+        - Employee
+      summary: Get all employees
+      description: Retrieve list of all employees
+      responses:
+        '200':
+          description: List of employees retrieved successfully
+
+  /employee/leaves:
+    get:
+      tags:
+        - Employee
+      summary: Get employee leaves
+      description: Retrieve leave requests for employees
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Employee leaves retrieved successfully
+
+  /employee/summary:
+    post:
+      tags:
+        - Employee
+      summary: Get employee summary
+      description: Retrieve summary information for an employee
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employeeId:
+                  type: string
+      responses:
+        '200':
+          description: Employee summary retrieved successfully
+
+  /employee/{id}:
+    get:
+      tags:
+        - Employee
+      summary: Get employee by ID
+      description: Retrieve a specific employee by their ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee retrieved successfully
+        '404':
+          description: Employee not found
+
+  /employee/{id}/approved-leaves:
+    get:
+      tags:
+        - Employee
+      summary: Get approved leaves by employee and month
+      description: Retrieve approved leaves for a specific employee and month
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approved leaves retrieved successfully
+
+  /employee/create:
+    post:
+      tags:
+        - Employee
+      summary: Create new employee
+      description: Create a new employee record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                department:
+                  type: string
+                position:
+                  type: string
+                salary:
+                  type: number
+      responses:
+        '201':
+          description: Employee created successfully
+        '400':
+          description: Invalid input data
+
+  /employee/update/{id}:
+    put:
+      tags:
+        - Employee
+      summary: Update employee
+      description: Update an existing employee record
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                department:
+                  type: string
+                position:
+                  type: string
+                salary:
+                  type: number
+      responses:
+        '200':
+          description: Employee updated successfully
+        '404':
+          description: Employee not found
+
+  /employee/delete/{id}:
+    delete:
+      tags:
+        - Employee
+      summary: Delete employee
+      description: Delete an existing employee record
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee deleted successfully
+        '404':
+          description: Employee not found
+
+  /employee/leave/{id}/approve:
+    post:
+      tags:
+        - Employee
+      summary: Approve leave request
+      description: Approve a leave request
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Leave request approved successfully
+        '404':
+          description: Leave request not found
+
+  /employee/leave/{id}/reject:
+    post:
+      tags:
+        - Employee
+      summary: Reject leave request
+      description: Reject a leave request
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Leave request rejected successfully
+        '404':
+          description: Leave request not found
+
+  /employee/getleaves:
+    post:
+      tags:
+        - Employee
+      summary: Get leaves of employee
+      description: Retrieve leave records for a specific employee
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employeeId:
+                  type: string
+      responses:
+        '200':
+          description: Employee leaves retrieved successfully
+
+  /employee/addleave:
+    post:
+      tags:
+        - Employee
+      summary: Add leave request
+      description: Submit a new leave request
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+                reason:
+                  type: string
+                leaveType:
+                  type: string
+      responses:
+        '201':
+          description: Leave request submitted successfully
+        '400':
+          description: Invalid input data
+
+  /employee/profile:
+    get:
+      tags:
+        - Employee
+      summary: Get employee profile
+      description: Retrieve the current employee's profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Employee profile retrieved successfully
+        '401':
+          description: Unauthorized access
+
+  /employee/change-password:
+    post:
+      tags:
+        - Employee
+      summary: Change password
+      description: Change the current employee's password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password changed successfully
+        '400':
+          description: Invalid current password
+
+  /employee/update-profile:
+    put:
+      tags:
+        - Employee
+      summary: Update employee profile
+      description: Update the current employee's profile information
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated successfully
+        '400':
+          description: Invalid input data
+
+  # Task Routes
+  /task/create:
+    post:
+      tags:
+        - Task
+      summary: Create new task
+      description: Create a new task (Admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                assignedTo:
+                  type: string
+                dueDate:
+                  type: string
+                  format: date
+                priority:
+                  type: string
+                  enum: [low, medium, high]
+      responses:
+        '201':
+          description: Task created successfully
+        '400':
+          description: Invalid input data
+
+  /task:
+    get:
+      tags:
+        - Task
+      summary: Get all tasks
+      description: Retrieve all tasks (Admin only)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+        '401':
+          description: Unauthorized access
+
+  /task/{id}:
+    get:
+      tags:
+        - Task
+      summary: Get task by ID
+      description: Retrieve a specific task by its ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task retrieved successfully
+        '404':
+          description: Task not found
+
+    put:
+      tags:
+        - Task
+      summary: Update task
+      description: Update an existing task (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                assignedTo:
+                  type: string
+                dueDate:
+                  type: string
+                  format: date
+                priority:
+                  type: string
+                  enum: [low, medium, high]
+                status:
+                  type: string
+      responses:
+        '200':
+          description: Task updated successfully
+        '404':
+          description: Task not found
+
+    delete:
+      tags:
+        - Task
+      summary: Delete task
+      description: Delete an existing task (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task deleted successfully
+        '404':
+          description: Task not found
+
+  /task/employee/my-tasks:
+    get:
+      tags:
+        - Task
+      summary: Get my tasks
+      description: Retrieve tasks assigned to the current employee
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Employee tasks retrieved successfully
+        '401':
+          description: Unauthorized access
+
+  /task/employee/{id}/status:
+    put:
+      tags:
+        - Task
+      summary: Update task status
+      description: Update the status of a task (Employee only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, in_progress, completed]
+      responses:
+        '200':
+          description: Task status updated successfully
+        '404':
+          description: Task not found
+
+  /task/employee/stats:
+    get:
+      tags:
+        - Task
+      summary: Get task statistics
+      description: Retrieve task statistics for the current employee
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Task statistics retrieved successfully
+        '401':
+          description: Unauthorized access
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Admin
+    description: Admin-specific operations
+  - name: Department
+    description: Department management operations
+  - name: Employee
+    description: Employee management operations
+  - name: Task
+    description: Task management operations
