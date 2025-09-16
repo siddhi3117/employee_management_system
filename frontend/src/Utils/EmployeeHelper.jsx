@@ -1,7 +1,7 @@
 // Utils/EmployeeHelper.js
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axiosInstance";
 import { Link } from "react-router-dom";
 
 export const employeeColumns = [
@@ -52,13 +52,9 @@ export const EmployeeButtons = ({ _id }) => {
         className="px-2 py-0.5 bg-red-600 text-white rounded hover:bg-red-800"
         onClick={() =>{
           (async () => {
-            await axios.delete(`http://localhost:5000/api/employee/delete/${_id}`, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-            });
-            window.location.reload();
+            const response = await api.get("/api/employee/employees");
           })();
+          window.location.reload();
         }}
       >
         Delete

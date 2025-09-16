@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 import { useAuth } from "../../../context/authContext";
 
 const SettingsPage = () => {
@@ -38,14 +38,9 @@ const SettingsPage = () => {
     e.preventDefault();
     setUpdating(true);
     try {
-      const res = await axios.put(
-        "http://localhost:5000/api/auth/update",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+      const res = await api.put(
+        "/api/auth/update",
+        formData
       );
 
       if (res.data.success) {

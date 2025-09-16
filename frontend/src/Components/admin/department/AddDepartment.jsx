@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import DepartmentList from "./DepartmentList";
 
@@ -20,14 +20,9 @@ const AddDepartment = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/department/add",
-        department,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+      const response = await api.post(
+        "/api/department/add",
+        department
       );
 
       if (response.data.success) {

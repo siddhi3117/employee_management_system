@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 
 const LeaveDetails = () => {
   const { id } = useParams(); // leaveId from URL
@@ -13,13 +13,8 @@ const LeaveDetails = () => {
     const fetchLeave = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/employee/leave/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+        const response = await api.get(
+          `/api/employee/leave/${id}`
         );
 
         if (response.data.success) {
@@ -125,14 +120,9 @@ const LeaveDetails = () => {
             <div className="flex gap-3">
               <button
                 onClick={async () => {
-                  await axios.put(
-                    `http://localhost:5000/api/employee/leave/${leave._id}/approve`,
-                    {},
-                    {
-                      headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                      },
-                    }
+                  await api.put(
+                    `/api/employee/leave/${leave._id}/approve`,
+                    {}
                   );
                   alert("Leave approved!");
                   navigate("/admin-dashboard/leaves");
@@ -143,14 +133,9 @@ const LeaveDetails = () => {
               </button>
               <button
                 onClick={async () => {
-                  await axios.put(
-                    `http://localhost:5000/api/employee/leave/${leave._id}/reject`,
-                    {},
-                    {
-                      headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                      },
-                    }
+                  await api.put(
+                    `/api/employee/leave/${leave._id}/reject`,
+                    {}
                   );
                   alert("Leave rejected!");
                   navigate("/admin-dashboard/leaves");

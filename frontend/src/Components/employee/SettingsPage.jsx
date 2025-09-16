@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useAuth } from "../../context/authContext";
 
 const SettingsPage = () => {
@@ -29,13 +29,8 @@ const SettingsPage = () => {
   useEffect(() => {
     const fetchEmployeeInfo = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/employee/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+        const response = await api.get(
+          `/api/employee/profile`
         );
 
         if (response.data.success) {
@@ -67,15 +62,10 @@ const SettingsPage = () => {
 
     setIsUpdatingProfile(true);
     try {
-      const response = await axios.put(
-        "http://localhost:5000/api/employee/update-profile",
+      const response = await api.put(
+        "/api/employee/update-profile",
         {
           name: profileData.name.trim(),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
         }
       );
 
@@ -114,16 +104,11 @@ const SettingsPage = () => {
 
     setIsChangingPassword(true);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/employee/change-password",
+      const response = await api.post(
+        "/api/employee/change-password",
         {
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
         }
       );
 

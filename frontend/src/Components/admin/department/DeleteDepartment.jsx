@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 
 const DeleteDepartment = () => {
   const navigate = useNavigate();
@@ -8,7 +8,7 @@ const DeleteDepartment = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/department/${id}`);
+      await api.delete(`/api/department/${id}`);
       alert("Department deleted successfully!");
       navigate("/admin-dashboard/department");
     } catch (error) {

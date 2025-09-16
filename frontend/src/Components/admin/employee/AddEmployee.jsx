@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 
 const AddEmployee = () => {
   const [name, setName] = useState("");
@@ -16,11 +16,7 @@ const AddEmployee = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/department", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await api.get("/api/department");
 
         if (response.data.success) {
           setDepartments(response.data.data);
@@ -39,18 +35,13 @@ const AddEmployee = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/employee/create",
+      const response = await api.post(
+        "/api/employee/create",
         {
           name,
           email,
           department,
           salary,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
         }
       );
 
