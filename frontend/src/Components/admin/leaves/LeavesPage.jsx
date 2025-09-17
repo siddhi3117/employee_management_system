@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 
 const LeavesPage = () => {
   const [leaves, setLeaves] = useState([]);
@@ -10,11 +10,7 @@ const LeavesPage = () => {
     const fetchLeaves = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:5000/api/employee/leaves", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await api.get("/employee/leaves");
 
         if (response.data.success) {
           // Sort leaves: pending first, then by creation date (newest first)
@@ -43,24 +39,15 @@ const LeavesPage = () => {
   const handleAction = async (employeeId, leaveId, newStatus) => {
     try {
       const endpoint = newStatus === "approved" ? "approve" : "reject";
-      const response = await axios.post(
-        `http://localhost:5000/api/employee/leave/${leaveId}/${endpoint}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+      const response = await api.post(
+        `/employee/leave/${leaveId}/${endpoint}`,
+        {}
       );
 
       if (response.data.success) {
         alert(`Leave ${newStatus} successfully!`);
         // Refresh the leaves data to get updated sorting
-        const refreshResponse = await axios.get("http://localhost:5000/api/employee/leaves", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const refreshResponse = await api.get("/employee/leaves");
 
         if (refreshResponse.data.success) {
           // Sort leaves: pending first, then by creation date (newest first)
@@ -100,11 +87,7 @@ const LeavesPage = () => {
   const refreshLeaves = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/employee/leaves", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await api.get("/employee/leaves");
 
       if (response.data.success) {
         // Sort leaves: pending first, then by creation date (newest first)

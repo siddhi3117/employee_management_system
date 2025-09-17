@@ -1,7 +1,7 @@
 import React, { useEffect,useState } from 'react'
 import SummaryCard from '../../SummaryCard'
 import { FaBuilding, FaCheckCircle, FaFileAlt, FaHourglassHalf, FaMoneyBillWave, FaTimesCircle, FaUser, FaUsers } from 'react-icons/fa'
-import axios from 'axios'
+import api from '../../../api/axiosInstance'
 
 const AdminSummary = () => {
   const [summaryData, setSummaryData] = useState({
@@ -16,11 +16,7 @@ const AdminSummary = () => {
 
   useEffect(()=>{
     (async()=>{
-      const res = await axios.get('http://localhost:5000/api/admin/adminsummary', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      const res = await api.get('/api/admin/adminsummary');
       const summaryData = res.data;
       console.log(summaryData);
 

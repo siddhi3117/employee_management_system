@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useAuth } from "../../context/authContext";
 import { FaCalendarAlt, FaPlus } from "react-icons/fa";
 
@@ -19,14 +19,9 @@ const ELeavesPage = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.post(
-          "http://localhost:5000/api/employee/getleaves",
-          { employeeId: user?._id },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+        const res = await api.post(
+          "/employee/getleaves",
+          { employeeId: user?._id }
         );
 
         // Group leaves by month
@@ -63,14 +58,9 @@ const ELeavesPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(
-        "http://localhost:5000/api/employee/addleave",
-        { ...formData, employee: user?._id },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+      await api.post(
+        "/employee/addleave",
+        { ...formData, employee: user?._id }
       );
       alert("Leave request submitted!");
       setShowForm(false);

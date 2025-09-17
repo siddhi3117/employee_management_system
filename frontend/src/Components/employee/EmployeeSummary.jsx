@@ -8,7 +8,7 @@ import {
   FaTimesCircle,
   FaUser,
 } from "react-icons/fa";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useAuth } from "../../context/authContext";
 
 const EmployeeSummary = () => {
@@ -25,14 +25,9 @@ const EmployeeSummary = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.post(
-          "http://localhost:5000/api/employee/summary",
-          {}, // No body needed, employee ID comes from auth token
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+        const res = await api.post(
+          "/employee/summary",
+          {} // No body needed, employee ID comes from auth token
         );
         const data = res.data;
         console.log("Employee summary data:", data);

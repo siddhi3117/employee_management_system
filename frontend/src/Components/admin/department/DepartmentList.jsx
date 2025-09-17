@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { columns, DepartmentButtons } from "../../../Utils/DepartmentHelper";
-import axios from "axios";
+import api from "../../../api/axiosInstance";
 
 const DepartmentList = () => {
   const [departments, setDepartments] = useState([]);
@@ -12,11 +12,7 @@ const DepartmentList = () => {
     const fetchDepartments = async () => {
       setDepLoading(true);
       try {
-        const response = await axios.get("http://localhost:5000/api/department", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await api.get("/department");
 
         if (response.data.success && Array.isArray(response.data.data)) {
           const data = response.data.data.map((dep, index) => ({

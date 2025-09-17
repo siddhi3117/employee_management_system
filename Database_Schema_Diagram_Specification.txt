@@ -1,0 +1,270 @@
+===============================================================================
+                    DATABASE SCHEMA DIAGRAM SPECIFICATION
+                    Employee Management System
+===============================================================================
+
+COLLECTIONS AND RELATIONSHIPS OVERVIEW:
+
+1. USER COLLECTION
+   Fields:
+   - _id: ObjectId (Primary Key)
+   - name: String (Required)
+   - email: String (Required, Unique)
+   - password: String (Required, Hashed)
+   - role: String (Enum: "admin", "employee")
+   - profileImage: String (Optional)
+   - employeeRef: ObjectId → References Employee._id
+   - createAt: Date (Default: Current Date)
+   - PaymentRequestUpdateEventAt: Date (Default: Current Date)
+
+2. EMPLOYEE COLLECTION
+   Fields:
+   - _id: ObjectId (Primary Key)
+   - name: String (Required)
+   - email: String (Required, Unique)
+   - department: ObjectId → References Department._id
+   - salary: Number (Required)
+   - profileImage: String (Optional)
+   - userRef: ObjectId → References User._id
+   - total_leaves: Number (Default: 0)
+   - leaveHistory: Array of Objects [
+       {
+         leaveType: String (Enum: "sick", "casual", "earned")
+         fromDate: Date (Required)
+         toDate: Date (Required)
+         status: String (Enum: "approved", "pending", "rejected")
+       }
+     ]
+   - onleave: Boolean (Default: false)
+   - attendance: Array of Objects [
+       {
+         date: Date (Required)
+         status: String (Enum: "Present", "Absent", "Leave")
+       }
+     ]
+
+3. DEPARTMENT COLLECTION
+   Fields:
+   - _id: ObjectId (Primary Key)
+   - name: String (Required, Unique)
+   - description: String (Optional)
+   - createdAt: Date (Default: Current Date)
+
+4. TASK COLLECTION (Inferred from API endpoints)
+   Fields:
+   - _id: ObjectId (Primary Key)
+   - title: String (Required)
+   - description: String (Required)
+   - assignedTo: ObjectId → References Employee._id
+   - createdBy: ObjectId → References User._id
+   - status: String (Enum: "pending", "in_progress", "completed")
+   - priority: String (Enum: "low", "medium", "high")
+   - dueDate: Date
+   - createdAt: Date (Default: Current Date)
+
+===============================================================================
+
+RELATIONSHIPS DIAGRAM (ASCII Representation):
+
+┌─────────────────┐         ┌─────────────────┐
+│      USER       │◄────────┤    EMPLOYEE     │
+│                 │         │                 │
+│ _id (PK)        │         │ _id (PK)        │
+│ name            │         │ name            │
+│ email (UNIQUE)  │         │ email (UNIQUE)  │
+│ password        │         │ salary          │
+│ role            │         │ total_leaves    │
+│ profileImage    │         │ onleave         │
+│ employeeRef ────┼────────►│ userRef         │
+│ createAt        │         │ leaveHistory[]  │
+│                 │         │ attendance[]    │
+└─────────────────┘         └─────────────────┘
+                                      │
+                                      │ department
+                                      ▼
+                            ┌─────────────────┐
+                            │   DEPARTMENT    │
+                            │                 │
+                            │ _id (PK)        │
+                            │ name (UNIQUE)   │
+                            │ description     │
+                            │ createdAt       │
+                            └─────────────────┘
+
+┌─────────────────┐         ┌─────────────────┐
+│      TASK       │         │    EMPLOYEE     │
+│                 │         │                 │
+│ _id (PK)        │         │ _id (PK)        │
+│ title           │         │ (other fields)  │
+│ description     │         │                 │
+│ assignedTo ─────┼────────►│                 │
+│ status          │         │                 │
+│ priority        │         └─────────────────┘
+│ dueDate         │
+│ createdBy ──────┼─────────┐
+│ createdAt       │         │
+└─────────────────┘         │
+                            ▼
+                  ┌─────────────────┐
+                  │      USER       │
+                  │                 │
+                  │ _id (PK)        │
+                  │ (other fields)  │
+                  │                 │
+                  └─────────────────┘
+
+===============================================================================
+
+RELATIONSHIP TYPES:
+
+1. USER ↔ EMPLOYEE (One-to-One Bidirectional)
+   - User.employeeRef → Employee._id
+   - Employee.userRef → User._id
+   - Ensures authentication account is linked to employee profile
+
+2. EMPLOYEE → DEPARTMENT (Many-to-One)
+   - Employee.department → Department._id
+   - Multiple employees can belong to one department
+
+3. TASK → EMPLOYEE (Many-to-One for Assignment)
+   - Task.assignedTo → Employee._id
+   - Multiple tasks can be assigned to one employee
+
+4. TASK → USER (Many-to-One for Creation)
+   - Task.createdBy → User._id
+   - Multiple tasks can be created by one user (admin)
+
+===============================================================================
+
+CONSTRAINTS AND INDEXES:
+
+UNIQUE CONSTRAINTS:
+- User.email (Unique across all users)
+- Employee.email (Unique across all employees)
+- Department.name (Unique department names)
+
+RECOMMENDED INDEXES:
+- User.email (for login queries)
+- Employee.department (for department-wise queries)
+- Employee.userRef (for user-employee lookups)
+- Task.assignedTo (for employee task queries)
+- Task.createdBy (for admin task queries)
+- Task.status (for task filtering)
+
+REFERENTIAL INTEGRITY:
+- All ObjectId references should be validated
+- Cascade delete policies should be defined
+- Orphaned records should be prevented
+
+===============================================================================
+
+NESTED DOCUMENT STRUCTURES:
+
+EMPLOYEE.LEAVEHISTORY:
+┌─────────────────────────────────────┐
+│ leaveHistory: [                     │
+│   {                                 │
+│     leaveType: "sick|casual|earned" │
+│     fromDate: Date                  │
+│     toDate: Date                    │
+│     status: "approved|pending|      │
+│             rejected"               │
+│   }                                 │
+│ ]                                   │
+└─────────────────────────────────────┘
+
+EMPLOYEE.ATTENDANCE:
+┌─────────────────────────────────────┐
+│ attendance: [                       │
+│   {                                 │
+│     date: Date                      │
+│     status: "Present|Absent|Leave"  │
+│   }                                 │
+│ ]                                   │
+└─────────────────────────────────────┘
+
+===============================================================================
+
+DIAGRAM CREATION INSTRUCTIONS:
+
+For Draw.io/Diagrams.net:
+1. Create rectangles for each collection
+2. Add field names with data types
+3. Mark primary keys with (PK)
+4. Mark unique fields with (UNIQUE)
+5. Draw arrows for relationships
+6. Use different colors for different collection types
+7. Add cardinality labels (1:1, 1:M, M:1)
+
+For dbdiagram.io:
+Use this syntax:
+```
+Table User {
+  _id ObjectId [pk]
+  name String [not null]
+  email String [unique, not null]
+  password String [not null]
+  role String [note: 'admin or employee']
+  profileImage String
+  employeeRef ObjectId [ref: > Employee._id]
+  createAt Date [default: 'now()']
+}
+
+Table Employee {
+  _id ObjectId [pk]
+  name String [not null]
+  email String [unique, not null]
+  department ObjectId [ref: > Department._id]
+  salary Number [not null]
+  profileImage String
+  userRef ObjectId [ref: > User._id]
+  total_leaves Number [default: 0]
+  onleave Boolean [default: false]
+}
+
+Table Department {
+  _id ObjectId [pk]
+  name String [unique, not null]
+  description String
+  createdAt Date [default: 'now()']
+}
+
+Table Task {
+  _id ObjectId [pk]
+  title String [not null]
+  description String [not null]
+  assignedTo ObjectId [ref: > Employee._id]
+  createdBy ObjectId [ref: > User._id]
+  status String [note: 'pending, in_progress, completed']
+  priority String [note: 'low, medium, high']
+  dueDate Date
+  createdAt Date [default: 'now()']
+}
+```
+
+===============================================================================
+
+VISUAL DESIGN RECOMMENDATIONS:
+
+COLOR CODING:
+- User/Authentication: Blue
+- Employee/HR: Green  
+- Department/Organization: Orange
+- Task/Work: Purple
+
+LAYOUT SUGGESTIONS:
+- Place User and Employee collections at the center (main entities)
+- Position Department above Employee (organizational hierarchy)
+- Place Task collection to the side with clear relationship lines
+- Use consistent spacing and alignment
+- Add a legend explaining symbols and relationships
+
+ADDITIONAL ELEMENTS:
+- Title: "Employee Management System - Database Schema"
+- Version information and last updated date
+- Legend explaining relationship types and symbols
+- Notes about nested documents and arrays
+
+===============================================================================
+                              END OF SPECIFICATION
+===============================================================================
