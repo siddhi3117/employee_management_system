@@ -10,7 +10,7 @@ const LeavesPage = () => {
     const fetchLeaves = async () => {
       setLoading(true);
       try {
-        const response = await api.get("/api/employee/leaves");
+        const response = await api.get("/employee/leaves");
 
         if (response.data.success) {
           // Sort leaves: pending first, then by creation date (newest first)
@@ -40,14 +40,14 @@ const LeavesPage = () => {
     try {
       const endpoint = newStatus === "approved" ? "approve" : "reject";
       const response = await api.post(
-        `/api/employee/leave/${leaveId}/${endpoint}`,
+        `/employee/leave/${leaveId}/${endpoint}`,
         {}
       );
 
       if (response.data.success) {
         alert(`Leave ${newStatus} successfully!`);
         // Refresh the leaves data to get updated sorting
-        const refreshResponse = await api.get("/api/employee/leaves");
+        const refreshResponse = await api.get("/employee/leaves");
 
         if (refreshResponse.data.success) {
           // Sort leaves: pending first, then by creation date (newest first)
@@ -87,7 +87,7 @@ const LeavesPage = () => {
   const refreshLeaves = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/api/employee/leaves");
+      const response = await api.get("/employee/leaves");
 
       if (response.data.success) {
         // Sort leaves: pending first, then by creation date (newest first)

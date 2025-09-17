@@ -12,7 +12,7 @@ const DepartmentList = () => {
     const fetchDepartments = async () => {
       setDepLoading(true);
       try {
-        const response = await api.get("/api/department");
+        const response = await api.get("/department");
 
         if (response.data.success && Array.isArray(response.data.data)) {
           const data = response.data.data.map((dep, index) => ({

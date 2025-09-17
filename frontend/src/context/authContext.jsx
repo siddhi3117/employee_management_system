@@ -15,7 +15,7 @@ const Authprovider = ({ children }) => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          const response = await api.get("/api/auth/verify");
+          const response = await api.get("/auth/verify");
           console.log(response)
 
           if (response.data.success) {

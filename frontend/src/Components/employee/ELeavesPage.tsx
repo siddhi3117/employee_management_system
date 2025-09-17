@@ -20,7 +20,7 @@ const ELeavesPage = () => {
     (async () => {
       try {
         const res = await api.post(
-          "/api/employee/getleaves",
+          "/employee/getleaves",
           { employeeId: user?._id }
         );
 
@@ -59,7 +59,7 @@ const ELeavesPage = () => {
     e.preventDefault();
     try {
       await api.post(
-        "/api/employee/addleave",
+        "/employee/addleave",
         { ...formData, employee: user?._id }
       );
       alert("Leave request submitted!");

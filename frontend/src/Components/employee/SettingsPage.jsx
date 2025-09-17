@@ -30,7 +30,7 @@ const SettingsPage = () => {
     const fetchEmployeeInfo = async () => {
       try {
         const response = await api.get(
-          `/api/employee/profile`
+          `/employee/profile`
         );
 
         if (response.data.success) {
@@ -63,7 +63,7 @@ const SettingsPage = () => {
     setIsUpdatingProfile(true);
     try {
       const response = await api.put(
-        "/api/employee/update-profile",
+        "/employee/update-profile",
         {
           name: profileData.name.trim(),
         }
@@ -105,7 +105,7 @@ const SettingsPage = () => {
     setIsChangingPassword(true);
     try {
       const response = await api.post(
-        "/api/employee/change-password",
+        "/employee/change-password",
         {
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,

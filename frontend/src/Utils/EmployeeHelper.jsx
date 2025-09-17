@@ -52,7 +52,7 @@ export const EmployeeButtons = ({ _id }) => {
         className="px-2 py-0.5 bg-red-600 text-white rounded hover:bg-red-800"
         onClick={() =>{
           (async () => {
-            const response = await api.get("/api/employee/employees");
+            const response = await api.get("/employee/employees");
           })();
           window.location.reload();
         }}

@@ -21,7 +21,7 @@ const AddDepartment = () => {
 
     try {
       const response = await api.post(
-        "/api/department/add",
+        "/department/add",
         department
       );
 

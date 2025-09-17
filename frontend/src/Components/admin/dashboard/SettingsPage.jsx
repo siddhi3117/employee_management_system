@@ -39,7 +39,7 @@ const SettingsPage = () => {
     setUpdating(true);
     try {
       const res = await api.put(
-        "/api/auth/update",
+        "/auth/update",
         formData
       );
 

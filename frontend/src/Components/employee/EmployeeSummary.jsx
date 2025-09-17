@@ -26,7 +26,7 @@ const EmployeeSummary = () => {
     (async () => {
       try {
         const res = await api.post(
-          "/api/employee/summary",
+          "/employee/summary",
           {} // No body needed, employee ID comes from auth token
         );
         const data = res.data;

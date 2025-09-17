@@ -16,7 +16,7 @@ const AddEmployee = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await api.get("/api/department");
+        const response = await api.get("/department");
 
         if (response.data.success) {
           setDepartments(response.data.data);
@@ -36,7 +36,7 @@ const AddEmployee = () => {
 
     try {
       const response = await api.post(
-        "/api/employee/create",
+        "/employee/create",
         {
           name,
           email,
