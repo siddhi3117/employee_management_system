@@ -16,7 +16,7 @@ const AdminSummary = () => {
 
   useEffect(()=>{
     (async()=>{
-      const res = await api.get('/api/admin/adminsummary');
+      const res = await api.get('/admin/adminsummary');
       const summaryData = res.data;
       console.log(summaryData);
 
